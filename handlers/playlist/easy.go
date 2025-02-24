@@ -44,12 +44,13 @@ func EasyViewHandler(c *fiber.Ctx) error {
 					break
 				}
 				ret = append(ret, map[string]interface{}{
-					"id":      fmt.Sprintf("%s_%d", video_detail.Bvid, part["cid"].(int)),
-					"name":    part["name"],
-					"album":   video["title"],
-					"cover":   video["cover"],
-					"url":     url,
-					"artists": video["artists"],
+					"id":       fmt.Sprintf("%s_%d", video_detail.Bvid, part["cid"].(int)),
+					"name":     part["name"],
+					"duration": part["duration"],
+					"album":    video["title"],
+					"cover":    video["cover"],
+					"url":      url,
+					"artists":  video["artists"],
 				})
 			}
 		}

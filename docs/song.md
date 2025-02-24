@@ -6,6 +6,11 @@
 
 Get `/song/detail`
 
+Query Param:
+
+- `bvid` 必须
+- `cid` 可选，在第一次请求得到cid后在以后如果想要请求某个part的信息时用这个，他会在返回值中包含一个`duration`，表示毫秒意义的分p持续时间
+
 Example : `http://127.0.0.1:3000/song/detail?bvid=BV1FEzoYvEDh`
 
 当视频只有一个分p时

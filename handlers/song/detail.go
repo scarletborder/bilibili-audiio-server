@@ -4,6 +4,7 @@ import (
 	"bilibiliaudio/ctx"
 	"bilibiliaudio/utils"
 	"fmt"
+	"strconv"
 
 	"github.com/CuteReimu/bilibili/v2"
 	"github.com/gofiber/fiber/v2"
@@ -14,6 +15,7 @@ import (
 
 func SongDetail(c *fiber.Ctx) error {
 	bvid := c.Query("bvid", "")
+	cid := c.Query("cid", "")
 	if bvid == "" {
 		return c.Status(400).SendString("bvid is required")
 	}
@@ -25,6 +27,14 @@ func SongDetail(c *fiber.Ctx) error {
 
 	if err != nil {
 		return c.Status(500).SendString(err.Error())
+	}
+	if cid != "" {
+		for _, v := range song["songs"].([]map[string]interface{}) {
+			if strconv.Itoa(v["cid"].(int)) == cid {
+				// 在这里获取专有知识
+				song["duration"] = v["duration"]
+			}
+		}
 	}
 
 	return c.JSON(song)
@@ -67,8 +77,9 @@ func GetSongByBvid(srvCtx *ctx.SrvCtx, cache *cache.Cache, bvid string) (map[str
 
 	for _, v := range page {
 		ret["songs"] = append(ret["songs"].([]map[string]interface{}), map[string]interface{}{
-			"cid":  v.Cid,
-			"name": v.Part,
+			"cid":      v.Cid,
+			"name":     v.Part,
+			"duration": v.Duration * 1000, // 毫秒，持续时间，duration, tracktime
 		})
 	}
 
