@@ -9,3 +9,5 @@
 - [playlist](./playlist.md)
 
 - [user](./user.md)
+
+- [媒体](./media.md)

@@ -3,6 +3,7 @@ package handlers
 import (
 	"bilibiliaudio/ctx"
 	login_handler "bilibiliaudio/handlers/login"
+	media_handler "bilibiliaudio/handlers/media"
 	playlist_handler "bilibiliaudio/handlers/playlist"
 	song_handler "bilibiliaudio/handlers/song"
 	sys_handler "bilibiliaudio/handlers/sys"
@@ -25,6 +26,7 @@ func RegisterRoutes(app *fiber.App, ctx *ctx.SrvCtx) {
 	loginGroup.Get("/qrcode", login_handler.NewQrcodeLogin)
 	loginGroup.Get("/qrcode_img", login_handler.GetQrCodeImg)
 	loginGroup.Get("/qrcode_status", login_handler.GetQrcodeLoginStatus)
+	loginGroup.Post("/set_cookies", login_handler.SetCookiesHandler)
 
 	songGroup := app.Group("/song")
 	songGroup.Use(QueryCacheMiddleWare(query_cache))
@@ -38,5 +40,12 @@ func RegisterRoutes(app *fiber.App, ctx *ctx.SrvCtx) {
 	playlistGroup := app.Group("/playlist")
 	playlistGroup.Use(QueryCacheMiddleWare(query_cache))
 	playlistGroup.Get("/detail", playlist_handler.GetPlaylist)
+	playlistGroup.Get("/list_all", playlist_handler.ListAllHandler)
+	playlistGroup.Get("/get", playlist_handler.EasyViewHandler)
+
+	mediaGroup := app.Group("/media")
+	mediaGroup.Use(QueryCacheMiddleWare(query_cache))
+	mediaGroup.Get("/:bvidcid", media_handler.BvidCidHandler)
+	mediaGroup.Get("/proxy", media_handler.ProxyHandler)
 
 }

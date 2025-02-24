@@ -65,6 +65,7 @@ func getPlaylistLogic(srvCtx *ctx.SrvCtx, c *cache.Cache, mlid int, page int) (r
 
 	for _, v := range playlist.Medias {
 		ret = append(ret, model.SongDetail{
+			Id:    v.BvId,
 			Aid:   v.Id,
 			Bvid:  v.Bvid,
 			Title: v.Title,

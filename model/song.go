@@ -1,6 +1,7 @@
 package model
 
 type SongDetail struct {
+	Id string `json:"id"`
 	Aid     int    `json:"aid"`
 	Bvid    string `json:"bvid"`
 	Title   string `json:"title"`

@@ -11,21 +11,16 @@ import (
 	"github.com/patrickmn/go-cache"
 )
 
-func GetSongUrlLogic(srvCtx *ctx.SrvCtx, cache *cache.Cache, bvid string, cid string) (string, error) {
+func GetSongUrlLogic(srvCtx *ctx.SrvCtx, cache *cache.Cache, bvid string, cid int) (string, error) {
 	data, found := getUrlFromCache(cache, bvid, cid)
 	if found {
 		return data, nil
-	}
-
-	i_cid, err := strconv.Atoi(cid)
-	if err != nil {
-		return "", err
-	}
+	}	
 
 	_res, err := srvCtx.B23_client.GetVideoStream(bilibili.GetVideoStreamParam{
 		Bvid:  bvid,
 		Fnval: 16,
-		Cid:   i_cid,
+		Cid:   cid,
 	})
 
 	if err != nil {
@@ -49,8 +44,12 @@ func GetSongUrl(c *fiber.Ctx) error {
 	if cid == "" {
 		return c.Status(400).SendString("cid is required")
 	}
+	i_cid, err := strconv.Atoi(cid)
+	if err != nil {
+		return c.Status(400).SendString("cid is invalid")
+	}
 
-	url, err := GetSongUrlLogic(srvCtx, cache, bvid, cid)
+	url, err := GetSongUrlLogic(srvCtx, cache, bvid, i_cid)
 	if err != nil {
 		return c.Status(500).SendString(err.Error())
 	}
@@ -60,11 +59,10 @@ func GetSongUrl(c *fiber.Ctx) error {
 		"msg":  "success",
 		"url":  url,
 	})
-
 }
 
-func getUrlFromCache(c *cache.Cache, bvid string, cid string) (string, bool) {
-	key := fmt.Sprintf("bvid:%s:cid:%s", bvid, cid)
+func getUrlFromCache(c *cache.Cache, bvid string, cid int) (string, bool) {
+	key := fmt.Sprintf("bvid:%s:cid:%d", bvid, cid)
 	data, found := c.Get(key)
 	if found {
 		return data.(string), true
@@ -72,7 +70,7 @@ func getUrlFromCache(c *cache.Cache, bvid string, cid string) (string, bool) {
 	return "", false
 }
 
-func setUrlToCache(c *cache.Cache, bvid string, cid string, url string) {
-	key := fmt.Sprintf("bvid:%s:cid:%s", bvid, cid)
+func setUrlToCache(c *cache.Cache, bvid string, cid int, url string) {
+	key := fmt.Sprintf("bvid:%s:cid:%d", bvid, cid)
 	c.Set(key, url, cache.DefaultExpiration)
 }
