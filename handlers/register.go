@@ -45,7 +45,6 @@ func RegisterRoutes(app *fiber.App, ctx *ctx.SrvCtx) {
 
 	mediaGroup := app.Group("/media")
 	mediaGroup.Use(QueryCacheMiddleWare(query_cache))
-	mediaGroup.Get("/:bvidcid", media_handler.BvidCidHandler)
 	mediaGroup.Get("/proxy", media_handler.ProxyHandler)
-
+	mediaGroup.Get("/:bvidcid", media_handler.BvidCidHandler)
 }
